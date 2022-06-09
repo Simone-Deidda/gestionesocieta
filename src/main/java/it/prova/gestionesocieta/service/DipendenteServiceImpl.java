@@ -26,4 +26,9 @@ public class DipendenteServiceImpl implements DipendenteService {
 	public Dipendente caricaSingoloDipendente(Long id) {
 		return dipendenteRepository.findById(id).orElse(null);
 	}
+
+	@Override
+	public Dipendente caricaDipendentePiuAnzianoInSocietaFondatePrima1990() {
+		return null;
+	}
 }

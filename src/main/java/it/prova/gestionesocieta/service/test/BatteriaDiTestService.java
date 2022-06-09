@@ -148,7 +148,98 @@ public class BatteriaDiTestService {
 	}
 
 	public void listaDistintaSocietaConRALDipendenteMaggiore3000() {
+		Long longDate = new Date().getTime();
+		Societa societaDaTrovare = new Societa("Ragione Sociale" + longDate, "Indirizzo" + longDate, new Date());
+		if (societaDaTrovare.getId() != null)
+			throw new RuntimeException("testModificaDipendente...failed: transient object con id valorizzato");
 
+		societaService.inserisciNuovo(societaDaTrovare);
+		if (societaDaTrovare.getId() == null || societaDaTrovare.getId() < 1)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
+
+		Dipendente dipendenteRAL3000 = new Dipendente("Nome" + longDate, "Cognome" + longDate, new Date(), 3500);
+		dipendenteRAL3000.setSocieta(societaDaTrovare);
+		if (dipendenteRAL3000.getId() != null)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: transient object con id valorizzato");
+
+		dipendenteService.inserisciNuovo(dipendenteRAL3000);
+		if (dipendenteRAL3000.getId() == null || dipendenteRAL3000.getId() < 1)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
+
+		Dipendente dipendenteRAL3000StessaSocieta = new Dipendente("Nome" + longDate, "Cognome" + longDate, new Date(),
+				3400);
+		dipendenteRAL3000StessaSocieta.setSocieta(societaDaTrovare);
+		if (dipendenteRAL3000StessaSocieta.getId() != null)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: transient object con id valorizzato");
+
+		dipendenteService.inserisciNuovo(dipendenteRAL3000StessaSocieta);
+		if (dipendenteRAL3000StessaSocieta.getId() == null || dipendenteRAL3000StessaSocieta.getId() < 1)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
+
+		Societa altraSocietaDaTrovare = new Societa("Ragione Sociale" + longDate, "Indirizzo" + longDate, new Date());
+		if (altraSocietaDaTrovare.getId() != null)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: transient object con id valorizzato");
+
+		societaService.inserisciNuovo(altraSocietaDaTrovare);
+		if (altraSocietaDaTrovare.getId() == null || altraSocietaDaTrovare.getId() < 1)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
+
+		Dipendente dipendenteRAL3000AltraSocieta = new Dipendente("Nome" + longDate, "Cognome" + longDate, new Date(),
+				3500);
+		dipendenteRAL3000AltraSocieta.setSocieta(altraSocietaDaTrovare);
+		if (dipendenteRAL3000AltraSocieta.getId() != null)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: transient object con id valorizzato");
+
+		dipendenteService.inserisciNuovo(dipendenteRAL3000AltraSocieta);
+		if (dipendenteRAL3000AltraSocieta.getId() == null || dipendenteRAL3000AltraSocieta.getId() < 1)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
+
+		Societa societaNonDaTrovare = new Societa("Ragione Sociale" + longDate, "Indirizzo" + longDate, new Date());
+		if (societaNonDaTrovare.getId() != null)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: transient object con id valorizzato");
+
+		societaService.inserisciNuovo(societaNonDaTrovare);
+		if (societaNonDaTrovare.getId() == null || societaNonDaTrovare.getId() < 1)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
+
+		Dipendente dipendenteRALNot3000 = new Dipendente("Nome" + longDate, "Cognome" + longDate, new Date(), 2500);
+		dipendenteRALNot3000.setSocieta(societaNonDaTrovare);
+		if (dipendenteRALNot3000.getId() != null)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: transient object con id valorizzato");
+
+		dipendenteService.inserisciNuovo(dipendenteRALNot3000);
+		if (dipendenteRALNot3000.getId() == null || dipendenteRALNot3000.getId() < 1)
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
+
+		List<Societa> listaSocietaRAL3000 = societaService.listAllSocietaWhereDipendenteRALMaggiore3000();
+		if (listaSocietaRAL3000.size() < 2) {
+			throw new RuntimeException(
+					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: il numero di dipendenti trovati non è quello che aspettavo");
+		}
+		
+		for (Societa societa : listaSocietaRAL3000) {
+			// prendo i dipendenti di ogni società trovata
+			societa.getDipendenti().forEach(dip -> {
+				// e controllo che ognuno di essi non abbia un RAL minore di 3000 
+				if (dip.getReditoAnnuoLordo() < 3000) {
+					throw new RuntimeException(
+							"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: almeno un dipendente trovato ha meno di 3000 RAL");
+				}
+			});
+		}
 	}
 
 	public void caricaDipendentePiuAnzianoInSocietaFondataPrima1990() {

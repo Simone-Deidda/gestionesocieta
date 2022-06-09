@@ -9,4 +9,5 @@ public interface DipendenteService {
 	
 	public Dipendente caricaSingoloDipendente(Long id);
 
+	public Dipendente caricaDipendentePiuAnzianoInSocietaFondatePrima1990();
 }

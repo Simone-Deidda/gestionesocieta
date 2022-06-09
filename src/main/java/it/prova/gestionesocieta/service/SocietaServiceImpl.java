@@ -43,8 +43,8 @@ public class SocietaServiceImpl implements SocietaService {
 	}
 
 	@Override
-	public List<Societa> listAllSocietaWhereDataFondazioneMinore1990AndDipendenteRALMaggiore3000OrderByDataAssunzioneDipendente() throws ParseException {
-		return societaRepository.findAllByDataFondazioneBeforeAndDipendenti_ReditoAnnuoLordoGreaterThanOrderByDipendenti_DataAssunzione(new SimpleDateFormat("dd-MM-yyyy").parse("01-01-1990"), 3000);
+	public List<Societa> listAllSocietaWhereDipendenteRALMaggiore3000() {
+		return societaRepository.findAllDistinctByDipendenti_ReditoAnnuoLordoGreaterThan(3000);
 	}
 
 }
