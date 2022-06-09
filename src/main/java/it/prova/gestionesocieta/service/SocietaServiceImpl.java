@@ -36,7 +36,7 @@ public class SocietaServiceImpl implements SocietaService {
 
 	@Transactional
 	public void rimuovi(Societa societaInstance) {
-		if (societaInstance.getDipendenti() != null || !societaInstance.getDipendenti().isEmpty()) {
+		if (societaInstance.getDipendenti() != null && !societaInstance.getDipendenti().isEmpty()) {
 			throw new CannotDeleteSocietaWithDipendentiException("Non puoi eliminare una Società avente Dipendenti.");
 		}
 		societaRepository.delete(societaInstance);
