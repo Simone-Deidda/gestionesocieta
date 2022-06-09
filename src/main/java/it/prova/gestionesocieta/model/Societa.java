@@ -3,10 +3,14 @@ package it.prova.gestionesocieta.model;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "societa")
 public class Societa {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +26,7 @@ public class Societa {
 	public Societa() {
 	}
 
-	public Societa(Long id, String ragioneSociale, String indirizzo, Date dataFondazione) {
-		this.id = id;
+	public Societa(String ragioneSociale, String indirizzo, Date dataFondazione) {
 		this.ragioneSociale = ragioneSociale;
 		this.indirizzo = indirizzo;
 		this.dataFondazione = dataFondazione;
