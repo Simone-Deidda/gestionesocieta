@@ -1,13 +1,18 @@
 package it.prova.gestionesocieta.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "societa")
@@ -22,6 +27,8 @@ public class Societa {
 	private String indirizzo;
 	@Column(name = "dataFondazione")
 	private Date dataFondazione;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "societa")
+	private Set<Dipendente> dipendenti = new HashSet<>();
 
 	public Societa() {
 	}
@@ -62,6 +69,14 @@ public class Societa {
 
 	public void setDataFondazione(Date dataFondazione) {
 		this.dataFondazione = dataFondazione;
+	}
+
+	public Set<Dipendente> getDipendenti() {
+		return dipendenti;
+	}
+
+	public void setDipendenti(Set<Dipendente> dipendenti) {
+		this.dipendenti = dipendenti;
 	}
 
 	@Override

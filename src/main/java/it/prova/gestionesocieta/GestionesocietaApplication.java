@@ -18,6 +18,12 @@ public class GestionesocietaApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		System.out.println("############## Inizio Batteria test #################\n");
+		
+		batteriaDiTestService.inserisciSocieta();
+		batteriaDiTestService.findSocietaByExample();
+		
+		System.out.println("############## Fine Batteria test #################\n");
 	}
 
 }
