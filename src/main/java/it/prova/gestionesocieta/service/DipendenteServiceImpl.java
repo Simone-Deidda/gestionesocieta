@@ -1,5 +1,8 @@
 package it.prova.gestionesocieta.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +31,8 @@ public class DipendenteServiceImpl implements DipendenteService {
 	}
 
 	@Override
-	public Dipendente caricaDipendentePiuAnzianoInSocietaFondatePrima1990() {
-		return null;
+	public Dipendente caricaDipendentePiuAnzianoInSocietaFondatePrima1990() throws ParseException {
+		return dipendenteRepository.findFirstBySocieta_DataFondazioneBeforeOrderByDataAssunzione(
+				new SimpleDateFormat("dd-MM-yyyy").parse("01-01-1990")).orElse(null);
 	}
 }

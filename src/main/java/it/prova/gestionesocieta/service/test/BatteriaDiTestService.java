@@ -1,5 +1,7 @@
 package it.prova.gestionesocieta.service.test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -148,10 +150,16 @@ public class BatteriaDiTestService {
 	}
 
 	public void listaDistintaSocietaConRALDipendenteMaggiore3000() {
+		// ###################### inizio caricamento dati per il test
+		// #####################################
+		// 1 società con 2 dipendenti con +3000
+		// 1 società con 1 dipendenti con +3000
+		// 1 società con 2 dipendenti con -3000
+
 		Long longDate = new Date().getTime();
 		Societa societaDaTrovare = new Societa("Ragione Sociale" + longDate, "Indirizzo" + longDate, new Date());
 		if (societaDaTrovare.getId() != null)
-			throw new RuntimeException("testModificaDipendente...failed: transient object con id valorizzato");
+			throw new RuntimeException("testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: transient object con id valorizzato");
 
 		societaService.inserisciNuovo(societaDaTrovare);
 		if (societaDaTrovare.getId() == null || societaDaTrovare.getId() < 1)
@@ -224,25 +232,124 @@ public class BatteriaDiTestService {
 			throw new RuntimeException(
 					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: inserimento fallito");
 
+		// 1 società con 2 dipendenti con +3000
+		// 1 società con 1 dipendenti con +3000
+		// 1 società con 2 dipendenti con -3000
+		// ###################### fine caricamento dati per il test
+		// ################################
+
 		List<Societa> listaSocietaRAL3000 = societaService.listAllSocietaWhereDipendenteRALMaggiore3000();
 		if (listaSocietaRAL3000.size() < 2) {
 			throw new RuntimeException(
 					"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: il numero di dipendenti trovati non è quello che aspettavo");
 		}
-		
+
 		for (Societa societa : listaSocietaRAL3000) {
 			// prendo i dipendenti di ogni società trovata
 			societa.getDipendenti().forEach(dip -> {
-				// e controllo che ognuno di essi non abbia un RAL minore di 3000 
+				// e controllo che ognuno di essi non abbia un RAL minore di 3000
 				if (dip.getReditoAnnuoLordo() < 3000) {
 					throw new RuntimeException(
 							"testListaDistintaSocietaConRALDipendenteMaggiore3000...failed: almeno un dipendente trovato ha meno di 3000 RAL");
 				}
 			});
 		}
+		
+		System.out.println("testListaDistintaSocietaConRALDipendenteMaggiore3000........OK\n");
 	}
 
-	public void caricaDipendentePiuAnzianoInSocietaFondataPrima1990() {
+	public void caricaDipendentePiuAnzianoInSocietaFondataPrima1990() throws ParseException {
+		// ###################### inizio caricamento dati per il test #####################################
+		// società < 1980 con dipendente del 2000
+		// società < 1980 con dipendente del 2003
+		// società > 1980 con dipendente del 1999
 
+		Long longDate = new Date().getTime();
+		Societa societaDel1980 = new Societa("Ragione Sociale" + longDate, "Indirizzo" + longDate,
+				new SimpleDateFormat("dd-MM-yyyy").parse("01-01-1980"));
+		if (societaDel1980.getId() != null)
+			throw new RuntimeException("testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: transient object con id valorizzato");
+
+		societaService.inserisciNuovo(societaDel1980);
+		if (societaDel1980.getId() == null || societaDel1980.getId() < 1)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: inserimento fallito");
+
+		Dipendente dipendenteDaTrovare = new Dipendente("Antonietto" + longDate, "Cognome" + longDate,
+				new SimpleDateFormat("dd-MM-yyyy").parse("01-01-2000"), longDate.intValue());
+		dipendenteDaTrovare.setSocieta(societaDel1980);
+		if (dipendenteDaTrovare.getId() != null)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: transient object con id valorizzato");
+
+		dipendenteService.inserisciNuovo(dipendenteDaTrovare);
+		if (dipendenteDaTrovare.getId() == null || dipendenteDaTrovare.getId() < 1)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: inserimento fallito");
+
+		Societa societaDel1986 = new Societa("Ragione Sociale" + longDate, "Indirizzo" + longDate,
+				new SimpleDateFormat("dd-MM-yyyy").parse("01-01-1986"));
+		if (societaDel1986.getId() != null)
+			throw new RuntimeException("testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: transient object con id valorizzato");
+
+		societaService.inserisciNuovo(societaDel1986);
+		if (societaDel1986.getId() == null || societaDel1986.getId() < 1)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: inserimento fallito");
+
+		Dipendente dipendenteNonTrovare = new Dipendente("Nome" + longDate, "Cognome" + longDate,
+				new SimpleDateFormat("dd-MM-yyyy").parse("01-01-2003"), 3400);
+		dipendenteNonTrovare.setSocieta(societaDel1986);
+		if (dipendenteNonTrovare.getId() != null)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: transient object con id valorizzato");
+
+		dipendenteService.inserisciNuovo(dipendenteNonTrovare);
+		if (dipendenteNonTrovare.getId() == null || dipendenteNonTrovare.getId() < 1)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: inserimento fallito");
+
+		Societa societaDel1991 = new Societa("Ragione Sociale" + longDate, "Indirizzo" + longDate,
+				new SimpleDateFormat("dd-MM-yyyy").parse("01-01-1991"));
+		if (societaDel1991.getId() != null)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: transient object con id valorizzato");
+
+		societaService.inserisciNuovo(societaDel1991);
+		if (societaDel1991.getId() == null || societaDel1991.getId() < 1)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: inserimento fallito");
+
+		Dipendente dipendentePiuVecchioMaDiSocietaGiovane = new Dipendente("Nome" + longDate, "Cognome" + longDate,
+				new SimpleDateFormat("dd-MM-yyyy").parse("01-01-1999"), 3500);
+		dipendentePiuVecchioMaDiSocietaGiovane.setSocieta(societaDel1991);
+		if (dipendentePiuVecchioMaDiSocietaGiovane.getId() != null)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: transient object con id valorizzato");
+
+		dipendenteService.inserisciNuovo(dipendentePiuVecchioMaDiSocietaGiovane);
+		if (dipendentePiuVecchioMaDiSocietaGiovane.getId() == null
+				|| dipendentePiuVecchioMaDiSocietaGiovane.getId() < 1)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: inserimento fallito");
+
+		// società < 1980 con dipendente del 2000
+		// società < 1980 con dipendente del 2003
+		// società > 1980 con dipendente del 1999
+		// ###################### fine caricamento dati per il test #####################################
+
+		Dipendente result = dipendenteService.caricaDipendentePiuAnzianoInSocietaFondatePrima1990();
+		if (result == null || result.getId() == null || result.getId() < 1)
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: elemento non trovato fallito");
+
+		if (!result.getNome().contains("Antonietto") || !result.getSocieta().getDataFondazione()
+				.before(new SimpleDateFormat("dd-MM-yyyy").parse("01-01-1990"))) {
+			throw new RuntimeException(
+					"testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990...failed: elemento non combacia con quello aspettato fallito");
+
+		}
+		
+		System.out.println("testCaricaDipendentePiuAnzianoInSocietaFondataPrima1990........OK\n");
 	}
 }

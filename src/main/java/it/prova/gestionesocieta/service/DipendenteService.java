@@ -1,5 +1,7 @@
 package it.prova.gestionesocieta.service;
 
+import java.text.ParseException;
+
 import it.prova.gestionesocieta.model.Dipendente;
 
 public interface DipendenteService {
@@ -9,5 +11,5 @@ public interface DipendenteService {
 	
 	public Dipendente caricaSingoloDipendente(Long id);
 
-	public Dipendente caricaDipendentePiuAnzianoInSocietaFondatePrima1990();
+	public Dipendente caricaDipendentePiuAnzianoInSocietaFondatePrima1990() throws ParseException;
 }
